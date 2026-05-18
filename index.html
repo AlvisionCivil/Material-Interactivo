@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Diseño Sismorresistente — Moehle</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Source+Sans+3:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0f0e0c;--ink2:#3d3b35;--ink3:#7a7870;
+  --bg:#f5f2eb;--bg2:#ede9df;--bg3:#e2ddd2;
+  --red:#c0392b;--red2:#e74c3c;--red-light:#fdf0ef;
+  --amber:#d68910;--amber2:#f39c12;--amber-light:#fef9e7;
+  --blue:#1a5276;--blue2:#2980b9;--blue-light:#eaf4fb;
+  --green:#1e8449;--green-light:#eafaf1;
+  --border:#ccc8be;
+  --radius:6px;
+  --shadow:0 2px 8px rgba(0,0,0,.08);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Source Sans 3',sans-serif;background:var(--bg);color:var(--ink);min-height:100vh;line-height:1.7}
+header{background:var(--ink);color:#f5f2eb;padding:48px 40px 36px;position:relative;overflow:hidden}
+header::before{content:'';position:absolute;right:-60px;top:-60px;width:340px;height:340px;border:60px solid rgba(255,255,255,.04);border-radius:50%}
+header::after{content:'';position:absolute;right:40px;top:40px;width:180px;height:180px;border:30px solid rgba(255,255,255,.06);border-radius:50%}
+.header-tag{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--amber2);margin-bottom:12px;font-weight:600}
+header h1{font-family:'Playfair Display',serif;font-size:clamp(28px,5vw,52px);line-height:1.1;max-width:700px;margin-bottom:16px}
+header p{font-size:16px;color:rgba(245,242,235,.65);max-width:580px;font-weight:300}
+.header-meta{margin-top:28px;display:flex;gap:24px;flex-wrap:wrap}
+.meta-pill{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:20px;padding:6px 16px;font-size:13px;color:rgba(245,242,235,.75)}
+
+nav{background:var(--ink);border-top:1px solid rgba(255,255,255,.1);display:flex;overflow-x:auto;position:sticky;top:0;z-index:100}
+nav a{color:rgba(245,242,235,.55);text-decoration:none;padding:14px 22px;font-size:14px;font-weight:600;white-space:nowrap;letter-spacing:.02em;transition:.2s;border-bottom:2px solid transparent}
+nav a:hover{color:#f5f2eb}
+nav a.active{color:var(--amber2);border-bottom-color:var(--amber2)}
+
+main{max-width:1100px;margin:0 auto;padding:0 24px 80px}
+
+.section{padding-top:60px}
+.section-header{margin-bottom:36px}
+.section-header .tag{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--red);font-weight:700;margin-bottom:8px}
+.section-header h2{font-family:'Playfair Display',serif;font-size:clamp(24px,4vw,38px);color:var(--ink);line-height:1.2}
+.section-header p{font-size:16px;color:var(--ink2);margin-top:12px;max-width:640px}
+
+.card{background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow)}
+.card h3{font-family:'Playfair Display',serif;font-size:20px;margin-bottom:10px;color:var(--ink)}
+.card p{font-size:15px;color:var(--ink2);line-height:1.7}
+.grid-2{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px}
+.grid-3{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:20px}
+
+.concept-row{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:20px}
+.concept-row .left{background:var(--ink);color:#f5f2eb;padding:28px;display:flex;flex-direction:column;justify-content:center}
+.concept-row .left h3{font-family:'Playfair Display',serif;font-size:22px;margin-bottom:8px;color:#f5f2eb}
+.concept-row .left p{font-size:14px;color:rgba(245,242,235,.7);line-height:1.6}
+.concept-row .right{background:#fff;padding:28px}
+@media(max-width:640px){.concept-row{grid-template-columns:1fr}}
+
+.highlight-box{border-left:4px solid var(--red);background:var(--red-light);padding:16px 20px;border-radius:0 var(--radius) var(--radius) 0;margin:20px 0}
+.highlight-box.amber{border-left-color:var(--amber2);background:var(--amber-light)}
+.highlight-box.blue{border-left-color:var(--blue2);background:var(--blue-light)}
+.highlight-box.green{border-left-color:var(--green);background:var(--green-light)}
+.highlight-box strong{font-weight:700;color:var(--ink)}
+.highlight-box p{font-size:15px;color:var(--ink2);margin-top:4px}
+
+.badge{display:inline-block;padding:3px 10px;border-radius:12px;font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase}
+.badge-red{background:#fde8e8;color:var(--red)}
+.badge-amber{background:#fef3cd;color:var(--amber)}
+.badge-blue{background:#dbeafe;color:var(--blue)}
+.badge-green{background:#d1fae5;color:var(--green)}
+
+/* INTERACTIVE QUIZ */
+.quiz-wrap{background:#fff;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
+.quiz-question{padding:28px 28px 20px}
+.quiz-question h3{font-size:17px;font-weight:600;color:var(--ink);line-height:1.5}
+.quiz-options{display:flex;flex-direction:column;gap:8px;padding:0 28px 24px}
+.quiz-opt{background:var(--bg2);border:1.5px solid transparent;border-radius:var(--radius);padding:12px 16px;font-size:15px;cursor:pointer;text-align:left;transition:.2s;color:var(--ink)}
+.quiz-opt:hover{border-color:var(--blue2);background:#fff}
+.quiz-opt.correct{background:var(--green-light);border-color:var(--green);color:var(--green)}
+.quiz-opt.wrong{background:#fde8e8;border-color:var(--red);color:var(--red)}
+.quiz-feedback{padding:16px 28px 24px;font-size:14px;color:var(--ink2);display:none;border-top:1px solid var(--border);background:var(--bg);line-height:1.7}
+.quiz-nav{padding:0 28px 24px;display:flex;gap:12px;align-items:center}
+.btn{padding:10px 22px;border-radius:var(--radius);font-size:14px;font-weight:700;cursor:pointer;border:none;letter-spacing:.03em;transition:.15s}
+.btn-primary{background:var(--ink);color:#f5f2eb}
+.btn-primary:hover{background:var(--ink2)}
+.btn-outline{background:transparent;border:1.5px solid var(--border);color:var(--ink2)}
+.btn-outline:hover{border-color:var(--ink);color:var(--ink)}
+.quiz-progress{font-size:13px;color:var(--ink3);margin-left:auto}
+.score-badge{display:inline-block;background:var(--amber-light);border:1px solid var(--amber2);border-radius:20px;padding:4px 14px;font-size:13px;font-weight:700;color:var(--amber)}
+
+/* INTERACTIVE BUILDING VISUALIZER */
+.viz-wrap{background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:0;overflow:hidden}
+.viz-controls{padding:20px 24px;background:var(--bg2);border-bottom:1px solid var(--border);display:flex;gap:16px;flex-wrap:wrap;align-items:center}
+.viz-controls label{font-size:14px;color:var(--ink2);font-weight:600}
+.control-group{display:flex;align-items:center;gap:10px}
+select,input[type=range]{font-size:13px;color:var(--ink)}
+select{padding:6px 10px;border:1px solid var(--border);border-radius:4px;background:#fff;cursor:pointer}
+input[type=range]{-webkit-appearance:none;height:4px;border-radius:2px;background:var(--border);outline:none;cursor:pointer}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;border-radius:50%;background:var(--ink);cursor:pointer}
+.viz-stage{padding:24px;min-height:340px;display:flex;gap:32px;align-items:flex-end;justify-content:center}
+.viz-info{padding:20px 24px;border-top:1px solid var(--border);display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:16px}
+.info-stat{background:var(--bg);border-radius:var(--radius);padding:12px 16px}
+.info-stat .label{font-size:12px;color:var(--ink3);text-transform:uppercase;letter-spacing:.08em;font-weight:600}
+.info-stat .value{font-size:22px;font-weight:700;color:var(--ink);margin-top:4px}
+.info-stat .sub{font-size:12px;color:var(--ink3)}
+
+/* PERFORMANCE LEVELS */
+.perf-table{width:100%;border-collapse:collapse;font-size:14px}
+.perf-table th{background:var(--ink);color:#f5f2eb;padding:12px 16px;text-align:left;font-weight:600;font-size:13px}
+.perf-table td{padding:11px 16px;border-bottom:1px solid var(--border);vertical-align:top;color:var(--ink2)}
+.perf-table tr:last-child td{border-bottom:none}
+.perf-table tr:nth-child(even) td{background:var(--bg)}
+
+/* TIMELINE */
+.timeline{position:relative;padding-left:36px}
+.timeline::before{content:'';position:absolute;left:8px;top:8px;bottom:8px;width:2px;background:var(--border)}
+.timeline-item{position:relative;margin-bottom:28px}
+.timeline-item::before{content:'';position:absolute;left:-32px;top:6px;width:12px;height:12px;border-radius:50%;background:var(--red);border:2px solid #fff;box-shadow:0 0 0 2px var(--red)}
+.timeline-item h4{font-size:15px;font-weight:700;color:var(--ink);margin-bottom:4px}
+.timeline-item .year{font-size:11px;color:var(--red);font-weight:700;letter-spacing:.1em;text-transform:uppercase}
+.timeline-item p{font-size:14px;color:var(--ink2);line-height:1.6}
+
+/* STRUCTURAL COMPARISON */
+.sys-compare{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
+@media(max-width:640px){.sys-compare{grid-template-columns:1fr}}
+.sys-col{padding:24px}
+.sys-col:first-child{border-right:1px solid var(--border)}
+.sys-col h3{font-size:17px;font-weight:700;margin-bottom:16px;padding-bottom:12px;border-bottom:2px solid}
+.sys-col.frame h3{color:var(--blue);border-color:var(--blue)}
+.sys-col.wall h3{color:var(--red);border-color:var(--red)}
+.sys-col ul{list-style:none;display:flex;flex-direction:column;gap:8px}
+.sys-col li{font-size:14px;color:var(--ink2);padding-left:18px;position:relative;line-height:1.5}
+.sys-col li::before{position:absolute;left:0;font-weight:700}
+.sys-col.frame li::before{content:'→';color:var(--blue)}
+.sys-col.wall li::before{content:'→';color:var(--red)}
+
+/* ACCORDION */
+.accordion{border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:4px}
+.acc-trigger{width:100%;background:#fff;border:none;padding:16px 20px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;font-size:15px;font-weight:600;color:var(--ink);text-align:left}
+.acc-trigger:hover{background:var(--bg)}
+.acc-trigger .icon{font-size:18px;color:var(--ink3);transition:.2s;flex-shrink:0}
+.acc-trigger.open .icon{transform:rotate(45deg)}
+.acc-body{display:none;padding:16px 20px 20px;background:#fff;border-top:1px solid var(--border);font-size:15px;color:var(--ink2);line-height:1.7}
+.acc-body.open{display:block}
+
+/* FORMULA CARD */
+.formula{background:var(--ink);color:#f5f2eb;border-radius:var(--radius);padding:20px 24px;font-family:'Source Code Pro',monospace;font-size:14px;line-height:2;margin:16px 0}
+.formula .var{color:var(--amber2)}
+.formula .eq{color:var(--ink3);margin:0 8px}
+.formula .comment{color:rgba(245,242,235,.4);font-size:12px;font-family:'Source Sans 3',sans-serif;display:block;margin-top:4px}
+
+/* FAILURE MODES GRID */
+.failure-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-top:20px}
+.failure-card{background:#fff;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
+.failure-card .top{padding:16px 16px 12px;background:var(--bg)}
+.failure-card .top h4{font-size:15px;font-weight:700;color:var(--ink);margin-bottom:4px}
+.failure-card .top .severity{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em}
+.failure-card .body{padding:12px 16px;font-size:13px;color:var(--ink2);line-height:1.6}
+.sev-high{color:var(--red)}
+.sev-med{color:var(--amber)}
+.sev-low{color:var(--green)}
+
+footer{background:var(--ink);color:rgba(245,242,235,.5);text-align:center;padding:36px 24px;font-size:13px}
+footer strong{color:rgba(245,242,235,.85);font-weight:700}
+
+/* SCROLL SPY helper */
+.section{scroll-margin-top:56px}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-tag">📚 Material educativo interactivo</div>
+  <h1>Diseño Sismorresistente de Edificios de Concreto</h1>
+  <p>Los conceptos esenciales del libro de Jack P. Moehle — explicados de forma visual, progresiva y aplicada. Universidad de California, Berkeley.</p>
+  <div class="header-meta">
+    <span class="meta-pill">16 capítulos sintetizados</span>
+    <span class="meta-pill">5 módulos de aprendizaje</span>
+    <span class="meta-pill">Quiz interactivo incluido</span>
+    <span class="meta-pill">Visualizador de sistemas estructurales</span>
+  </div>
+</header>
+
+<nav id="main-nav">
+  <a href="#filosofia" class="active">Filosofía sismorresistente</a>
+  <a href="#sistemas">Sistemas estructurales</a>
+  <a href="#desempeno">Niveles de desempeño</a>
+  <a href="#fallas">Modos de falla</a>
+  <a href="#visualizador">Visualizador</a>
+  <a href="#quiz">Quiz</a>
+</nav>
+
+<main>
+
+<!-- ══════════════════════ SECCIÓN 1 ══════════════════════ -->
+<section class="section" id="filosofia">
+  <div class="section-header">
+    <div class="tag">Capítulo 1 • Fundamentos</div>
+    <h2>Filosofía del Diseño Sismorresistente</h2>
+    <p>El principio rector: no es evitar daños, sino <em>controlar cómo fallan los edificios</em>. La diferencia entre un colapso catastrófico y una estructura que protege vidas.</p>
+  </div>
+
+  <div style="margin-bottom:32px">
+    <div class="concept-row">
+      <div class="left">
+        <h3>¿Por qué el concreto reforzado?</h3>
+        <p>La construcción monolítica de concreto reforzado ofrece una trayectoria continua de carga, rigidez y, con el detallado correcto, la ductilidad necesaria para resistir sismos.</p>
+      </div>
+      <div class="right">
+        <p style="font-size:15px;color:var(--ink2);line-height:1.8"><strong>Sin diseño sísmico:</strong> falla localizada y frágil ante cualquier excedencia de resistencia.<br><br><strong>Con diseño sísmico:</strong> sistema con rigidez, resistencia y capacidad de deformación controlada.</p>
+        <div class="highlight-box" style="margin-top:16px">
+          <strong>Principio de Moehle</strong>
+          <p>"El objetivo es producir un sistema estructural con la rigidez, resistencia y capacidad de deformación necesarias para resistir el sismo con desempeño aceptable."</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid-3" style="margin-bottom:32px">
+    <div class="card">
+      <div class="badge badge-blue" style="margin-bottom:10px">Conceptual</div>
+      <h3>Diseño Conceptual</h3>
+      <p>Primera etapa: seleccionar, configurar y proporcionar preliminarmente los sistemas estructurales. Un buen concepto simplifica todo el proceso posterior.</p>
+    </div>
+    <div class="card">
+      <div class="badge badge-amber" style="margin-bottom:10px">Prescriptivo</div>
+      <h3>Diseño Prescriptivo</h3>
+      <p>Seguir estrictamente las exigencias del código (IBC, ASCE 7, ACI 318). Asumción implícita: un edificio que cumple el código cumple los objetivos de desempeño.</p>
+    </div>
+    <div class="card">
+      <div class="badge badge-green" style="margin-bottom:10px">Avanzado</div>
+      <h3>Diseño Basado en Desempeño</h3>
+      <p>Demuestra mediante análisis que el edificio cumple objetivos de desempeño aunque se desvíe de las prescripciones. Permite mayor creatividad estructural.</p>
+    </div>
+  </div>
+
+  <div class="section-header" style="margin-top:48px">
+    <div class="tag">Historia</div>
+    <h2 style="font-size:26px">Evolución del Código Sísmico en EE.UU.</h2>
+  </div>
+  <div class="timeline" style="background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:28px 28px 8px 60px">
+    <div class="timeline-item">
+      <div class="year">1961</div>
+      <h4>Blume, Newmark & Corning</h4>
+      <p>Primer texto sistemático sobre diseño sísmico de edificios de concreto. Introduce ductilidad flexural, diseño por capacidad para corte y continuidad del refuerzo.</p>
+    </div>
+    <div class="timeline-item">
+      <div class="year">1963</div>
+      <h4>SEAOC — Structural Engineers Assoc. of California</h4>
+      <p>Recomendaciones sobre requisitos de diseño sísmico que influirán decisivamente en los códigos de construcción de décadas posteriores.</p>
+    </div>
+    <div class="timeline-item">
+      <div class="year">1971</div>
+      <h4>Sismo de San Fernando</h4>
+      <p>Demuestra la vulnerabilidad de edificios de concreto no diseñados sísmicamente. Cataliza cambios urgentes en el código.</p>
+    </div>
+    <div class="timeline-item">
+      <div class="year">1976</div>
+      <h4>UBC adopta requisitos sísmicos</h4>
+      <p>El Uniform Building Code incorpora por primera vez las recomendaciones de Blume et al. y SEAOC como requisitos obligatorios de código.</p>
+    </div>
+    <div class="timeline-item">
+      <div class="year">2012–hoy</div>
+      <h4>IBC + ASCE 7 + ACI 318</h4>
+      <p>El International Building Code adopta por referencia los estándares de cargas sísmicas (ASCE 7) y concreto estructural (ACI 318), base del diseño moderno.</p>
+    </div>
+  </div>
+
+  <div class="highlight-box amber" style="margin-top:28px">
+    <strong>⚡ Concepto clave: Diseño por Capacidad</strong>
+    <p>Se diseña intencionalmente que ciertos elementos cedan primero (vigas), protegiendo los elementos críticos (columnas, muros). La secuencia de plastificación está predefinida por el ingeniero, no por el sismo.</p>
+  </div>
+</section>
+
+<!-- ══════════════════════ SECCIÓN 2 ══════════════════════ -->
+<section class="section" id="sistemas">
+  <div class="section-header">
+    <div class="tag">Capítulos 12 y 13 • Sistemas</div>
+    <h2>Sistemas Estructurales Sismorresistentes</h2>
+    <p>Dos grandes familias de sistemas para resistir fuerzas laterales: marcos especiales a momento y muros estructurales especiales.</p>
+  </div>
+
+  <div class="sys-compare" style="margin-bottom:32px">
+    <div class="sys-col frame">
+      <h3>🏗 Marco Especial a Momento (SMF)</h3>
+      <ul>
+        <li>Resistencia lateral por acción de marco: vigas y columnas trabajan juntas</li>
+        <li>Gran flexibilidad arquitectónica — menos restricciones en planta</li>
+        <li>Mayor deformación lateral (drift) bajo sismo</li>
+        <li>Principio columna fuerte / viga débil (SCWB)</li>
+        <li>Requiere confinamiento intenso en zonas de plastificación</li>
+        <li>Ideal para edificios de mediana altura con planta abierta</li>
+        <li>Unión viga-columna (junta) es elemento crítico de diseño</li>
+      </ul>
+    </div>
+    <div class="sys-col wall">
+      <h3>🧱 Muro Estructural Especial (SW)</h3>
+      <ul>
+        <li>Alta rigidez lateral — menor deriva bajo sismo</li>
+        <li>Protege mejor contenidos no estructurales</li>
+        <li>Requiere planificación cuidadosa de ubicación en planta</li>
+        <li>Zona crítica de plastificación en la base (rótula plástica)</li>
+        <li>Elementos de borde confinados en zonas de compresión</li>
+        <li>Muy eficiente en edificios altos (core central)</li>
+        <li>Muros acoplados: vigas de acoplamiento como fusibles sísmicos</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="section-header" style="margin-top:40px">
+    <div class="tag">Principios de detallado</div>
+    <h2 style="font-size:24px">Principios Esenciales para Marcos Especiales</h2>
+  </div>
+
+  <div style="display:flex;flex-direction:column;gap:4px;margin-bottom:32px">
+    <div class="accordion">
+      <button class="acc-trigger" onclick="toggleAcc(this)">
+        <span>1 — Sistema Columna Fuerte / Viga Débil (SCWB)</span>
+        <span class="icon">+</span>
+      </button>
+      <div class="acc-body">
+        <p>El sismo debe disipar energía formando rótulas plásticas <strong>en las vigas</strong>, no en las columnas. Si las columnas plastifican primero, se crea un mecanismo de piso blando que lleva al colapso total del edificio.</p>
+        <div class="formula">
+          <span><span class="var">∑Mnc</span> <span class="eq">≥</span> 1.2 · <span class="var">∑Mnb</span></span>
+          <span class="comment">La suma de momentos nominales de columnas ≥ 1.2 × suma de momentos nominales de vigas en cada nodo</span>
+        </div>
+        <p>Este factor de 1.2 del ACI 318 es el mínimo. En diseño por desempeño se usa factores mayores para asegurar mayor confiabilidad.</p>
+      </div>
+    </div>
+    <div class="accordion">
+      <button class="acc-trigger" onclick="toggleAcc(this)">
+        <span>2 — Detallado de Vigas para Respuesta Dúctil a Flexión</span>
+        <span class="icon">+</span>
+      </button>
+      <div class="acc-body">
+        <p>Las vigas de marcos especiales deben poder rotar de forma dúctil en sus extremos. Esto requiere:</p>
+        <ul style="margin:12px 0 0 20px;display:flex;flex-direction:column;gap:8px;font-size:14px;color:var(--ink2)">
+          <li>Cuantía mínima y máxima de refuerzo longitudinal</li>
+          <li>Continuidad del refuerzo superior e inferior a través de las juntas viga-columna</li>
+          <li>Estribos cerrados (ganchos a 135°) con espaciamiento reducido en zonas sísmicas</li>
+          <li>Empalmes alejados de las regiones de plastificación esperadas</li>
+        </ul>
+      </div>
+    </div>
+    <div class="accordion">
+      <button class="acc-trigger" onclick="toggleAcc(this)">
+        <span>3 — Evitar Modos de Falla No Dúctiles (Corte)</span>
+        <span class="icon">+</span>
+      </button>
+      <div class="acc-body">
+        <p>El diseño por corte no se basa en las fuerzas del análisis sísmico, sino en las fuerzas que se generan cuando la viga <em>alcanza su resistencia probable a flexión</em> en ambos extremos.</p>
+        <div class="formula">
+          <span><span class="var">Ve</span> <span class="eq">=</span> (<span class="var">Mpr1</span> + <span class="var">Mpr2</span>) / <span class="var">ln</span> + <span class="var">Vg</span></span>
+          <span class="comment">Ve = corte de diseño; Mpr = momento probable en extremos; ln = luz libre; Vg = corte por cargas gravitacionales</span>
+        </div>
+        <p>Si la viga con la cuantía real de acero alcanza su resistencia probable, el corte resultante puede ser mucho mayor que el del análisis elástico. Este "diseño por capacidad" para corte previene una falla frágil.</p>
+      </div>
+    </div>
+    <div class="accordion">
+      <button class="acc-trigger" onclick="toggleAcc(this)">
+        <span>4 — Junta Viga-Columna: el Talón de Aquiles del Marco</span>
+        <span class="icon">+</span>
+      </button>
+      <div class="acc-body">
+        <p>La junta viga-columna debe transferir grandes fuerzas de corte cuando las vigas alcanzan su capacidad. Los requisitos principales son:</p>
+        <ul style="margin:12px 0 0 20px;display:flex;flex-direction:column;gap:8px;font-size:14px;color:var(--ink2)">
+          <li><strong>Longitud de desarrollo:</strong> el acero longitudinal de viga debe desarrollarse completamente dentro de la junta — no es trivial en columnas de dimensiones limitadas</li>
+          <li><strong>Refuerzo transversal:</strong> la junta necesita refuerzo horizontal (generalmente continuación de los estribos de columna) para resistir el corte</li>
+          <li><strong>Dimensionamiento de columna:</strong> columnas más anchas reducen el corte en la junta y facilitan el anclaje del acero</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-header" style="margin-top:40px">
+    <div class="tag">Capítulo 13</div>
+    <h2 style="font-size:24px">Muros Estructurales: Esbeltos vs. Achaparrados</h2>
+  </div>
+
+  <div class="grid-2" style="margin-bottom:24px">
+    <div class="card">
+      <span class="badge badge-blue" style="margin-bottom:10px">Muro Esbelto</span>
+      <h3>Relación H/L ≥ 2–3</h3>
+      <p>Comportamiento dominado por <strong>flexión</strong>. La rótula plástica se concentra en la base. Los elementos de borde deben confinarse intensamente para soportar altas deformaciones de compresión sin aplastarse.</p>
+      <div class="highlight-box blue" style="margin-top:14px">
+        <p>Verificar estabilidad del frente de compresión ante pandeo lateral del muro.</p>
+      </div>
+    </div>
+    <div class="card">
+      <span class="badge badge-red" style="margin-bottom:10px">Muro Achaparrado</span>
+      <h3>Relación H/L &lt; 2</h3>
+      <p>Comportamiento dominado por <strong>corte</strong>. Puede usarse refuerzo diagonal para mejorar el comportamiento ante cargas cíclicas reversibles (muro con refuerzo diagonal — muy efectivo y requerido en vigas de acoplamiento).</p>
+      <div class="highlight-box" style="margin-top:14px">
+        <p>Más difícil de hacer dúctil. Requiere un refuerzo horizontal cuidadosamente detallado.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="highlight-box green">
+    <strong>💡 Muros Acoplados — El Fusible Sísmico</strong>
+    <p>Dos muros unidos por vigas de acoplamiento forman un sistema muy eficiente. Las vigas de acoplamiento actúan como fusibles: absorben y disipan energía sísmica mediante rótulas plásticas en sus extremos, protegiendo los muros principales. El grado de acoplamiento determina la distribución de cortante y momento basal entre los muros.</p>
+  </div>
+</section>
+
+<!-- ══════════════════════ SECCIÓN 3 ══════════════════════ -->
+<section class="section" id="desempeno">
+  <div class="section-header">
+    <div class="tag">Capítulo 1 — Sección 1.4 y 1.5</div>
+    <h2>Niveles de Desempeño y Verificación</h2>
+    <p>No todos los sismos son iguales, ni todos los edificios deben comportarse igual. El diseño moderno establece objetivos explícitos de desempeño para distintos niveles de sismo.</p>
+  </div>
+
+  <div style="overflow-x:auto;margin-bottom:28px">
+    <table class="perf-table">
+      <thead>
+        <tr>
+          <th>Nivel de sismo</th>
+          <th>Probabilidad</th>
+          <th>Período de retorno</th>
+          <th>Objetivo de desempeño (edificio ordinario)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Sismo frecuente / servicio</strong></td>
+          <td>50% en 50 años</td>
+          <td>~72 años</td>
+          <td>Sin daños estructurales. Plena operación. (<em>Serviceability Limit State</em>)</td>
+        </tr>
+        <tr>
+          <td><strong>Sismo de diseño (DBE)</strong></td>
+          <td>10% en 50 años</td>
+          <td>~475 años</td>
+          <td>Daños estructurales controlados. Seguridad de vida (LRFD / Limit States).</td>
+        </tr>
+        <tr>
+          <td><strong>Sismo máximo considerado (MCE)</strong></td>
+          <td>2% en 50 años</td>
+          <td>~2475 años</td>
+          <td>Daños severos permitidos. <strong>No colapso</strong>. Posible pérdida total del edificio.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="grid-3">
+    <div class="card">
+      <div class="badge badge-green" style="margin-bottom:10px">Estado Límite de Servicio</div>
+      <h3>Comportamiento Elástico</h3>
+      <p>Bajo sismos frecuentes el edificio debe permanecer esencialmente elástico — sin plastificaciones significativas en ningún elemento. Los daños no estructurales deben ser mínimos.</p>
+    </div>
+    <div class="card">
+      <div class="badge badge-amber" style="margin-bottom:10px">Estado Límite Último (LRFD)</div>
+      <h3>Diseño por Resistencia</h3>
+      <p>Φ·Rn ≥ ΣγᵢQᵢ — Las resistencias de diseño (reducidas por Φ) deben superar las demandas mayoradas. Combina cargas gravitacionales y sísmicas según ASCE 7.</p>
+    </div>
+    <div class="card">
+      <div class="badge badge-red" style="margin-bottom:10px">Diseño Basado en Desplazamiento</div>
+      <h3>Control de Derivas</h3>
+      <p>El sismo no solo genera fuerzas — genera deformaciones. Las derivas de entrepiso afectan la estabilidad del sistema y los daños no estructurales. ASCE 7 limita derivas de diseño.</p>
+    </div>
+  </div>
+
+  <div class="highlight-box amber" style="margin-top:28px">
+    <strong>⚡ Diseño Basado en Desempeño (PBSD) — El futuro del diseño sísmico</strong>
+    <p>En lugar de seguir reglas prescriptivas, el ingeniero selecciona objetivos de desempeño explícitos (ej. "probabilidad de colapso &lt; 1% en 50 años") y usa análisis no lineal para demostrar que el edificio los cumple. Requerido para edificios altos en zonas sísmicas de alta demanda (ej. edificios &gt; 50 pisos en California).</p>
+  </div>
+</section>
+
+<!-- ══════════════════════ SECCIÓN 4 ══════════════════════ -->
+<section class="section" id="fallas">
+  <div class="section-header">
+    <div class="tag">Capítulos 5–10 • Comportamiento de elementos</div>
+    <h2>Modos de Falla a Conocer y Evitar</h2>
+    <p>La naturaleza de los daños determina si la falla es dúctil (protegida) o frágil (catastrófica). El detallado correcto transforma un modo de falla frágil en uno controlado.</p>
+  </div>
+
+  <div class="failure-grid">
+    <div class="failure-card">
+      <div class="top">
+        <h4>Falla por Flexión</h4>
+        <div class="severity sev-low">● Dúctil (si detallado correcto)</div>
+      </div>
+      <div class="body">Formación de rótulas plásticas con gran capacidad de rotación. <strong>Deseable en vigas.</strong> Requiere cuantía controlada y estribos de confinamiento cerrados.</div>
+    </div>
+    <div class="failure-card">
+      <div class="top">
+        <h4>Falla por Corte</h4>
+        <div class="severity sev-high">● Frágil (evitar a toda costa)</div>
+      </div>
+      <div class="body">Falla diagonal súbita sin deformación previa. Puede ocurrir antes de que se desarrolle la resistencia a flexión. Se evita con diseño por capacidad para corte.</div>
+    </div>
+    <div class="failure-card">
+      <div class="top">
+        <h4>Pandeo de Armadura</h4>
+        <div class="severity sev-high">● Frágil (evitar)</div>
+      </div>
+      <div class="body">Las barras longitudinales de compresión pandean entre estribos si el espaciamiento es excesivo. Los estribos cerrados con ganchos a 135° son esenciales en zonas sísmicas.</div>
+    </div>
+    <div class="failure-card">
+      <div class="top">
+        <h4>Falla de Columna Corta</h4>
+        <div class="severity sev-high">● Muy frágil</div>
+      </div>
+      <div class="body">Tabiques parciales limitan la altura efectiva de columnas, concentrando el corte en una longitud reducida. Causa de muchos colapsos históricos. Debe detectarse en conceptual design.</div>
+    </div>
+    <div class="failure-card">
+      <div class="top">
+        <h4>Piso Blando (Soft Story)</h4>
+        <div class="severity sev-high">● Colapso total</div>
+      </div>
+      <div class="body">Un piso es significativamente más flexible o débil que los demás. Toda la demanda de deformación se concentra allí, superando la capacidad dúctil de las columnas.</div>
+    </div>
+    <div class="failure-card">
+      <div class="top">
+        <h4>Aplastamiento Zona Compresión</h4>
+        <div class="severity sev-med">● Moderado (controlable)</div>
+      </div>
+      <div class="body">En muros esbeltos, el frente de compresión puede aplastarse antes de que la fibra extrema en tensión agote su deformación. Los elementos de borde confinados previenen esto.</div>
+    </div>
+  </div>
+
+  <div class="highlight-box blue" style="margin-top:28px">
+    <strong>🔍 Concreto Confinado vs. No Confinado (Capítulo 4)</strong>
+    <p>El concreto sin confinar alcanza su capacidad a ~0.003 de deformación unitaria y falla bruscamente. Con estribos bien detallados (confinado), la capacidad de deformación se multiplica varios veces, permitiendo rotaciones dúctiles en las zonas de plastificación. Esta es la razón fundamental por la que el detallado sísmico existe.</p>
+  </div>
+</section>
+
+<!-- ══════════════════════ SECCIÓN 5 — VISUALIZADOR ══════════════════════ -->
+<section class="section" id="visualizador">
+  <div class="section-header">
+    <div class="tag">Herramienta interactiva</div>
+    <h2>Visualizador de Sistemas Estructurales</h2>
+    <p>Explora cómo cambia el comportamiento sísmico de un edificio según el sistema estructural elegido, la altura y la rigidez de los elementos.</p>
+  </div>
+
+  <div class="viz-wrap">
+    <div class="viz-controls">
+      <div class="control-group">
+        <label>Sistema:</label>
+        <select id="sys-select" onchange="updateViz()">
+          <option value="frame">Marco Especial a Momento</option>
+          <option value="wall">Muro Estructural</option>
+          <option value="dual">Sistema Dual (Marco + Muro)</option>
+        </select>
+      </div>
+      <div class="control-group">
+        <label>Pisos:</label>
+        <input type="range" id="floors-range" min="3" max="20" value="8" step="1" oninput="updateViz()">
+        <span id="floors-val" style="font-size:14px;font-weight:700;min-width:28px">8</span>
+      </div>
+      <div class="control-group">
+        <label>Intensidad sísmica:</label>
+        <select id="seismic-select" onchange="updateViz()">
+          <option value="low">Baja</option>
+          <option value="mid" selected>Media</option>
+          <option value="high">Alta</option>
+        </select>
+      </div>
+    </div>
+    <div class="viz-stage" id="viz-stage"></div>
+    <div class="viz-info" id="viz-info"></div>
+  </div>
+
+  <div class="highlight-box" style="margin-top:20px">
+    <strong>Lectura del visualizador</strong>
+    <p>La deformada exagerada muestra el perfil de desplazamientos bajo sismo. Los marcos exhiben una forma "cizallada" con mayor drift entre pisos en el tramo medio-bajo. Los muros exhiben una forma "flexural" con mayor curvatura en la base. El sistema dual combina ambas, distribuyendo mejor las demandas.</p>
+  </div>
+</section>
+
+<!-- ══════════════════════ SECCIÓN 6 — QUIZ ══════════════════════ -->
+<section class="section" id="quiz">
+  <div class="section-header">
+    <div class="tag">Evaluación</div>
+    <h2>Quiz de Comprensión</h2>
+    <p>Pon a prueba tu entendimiento de los conceptos del libro de Moehle. 8 preguntas basadas directamente en los principios fundamentales.</p>
+  </div>
+
+  <div class="quiz-wrap" id="quiz-container">
+    <div class="quiz-question" id="q-text"></div>
+    <div class="quiz-options" id="q-options"></div>
+    <div class="quiz-feedback" id="q-feedback"></div>
+    <div class="quiz-nav">
+      <button class="btn btn-primary" id="q-next" onclick="nextQ()" style="display:none">Siguiente pregunta →</button>
+      <span class="quiz-progress" id="q-progress"></span>
+    </div>
+  </div>
+
+  <div id="quiz-result" style="display:none;margin-top:20px" class="card">
+    <h3 id="res-title"></h3>
+    <p id="res-body" style="margin-top:8px"></p>
+    <button class="btn btn-outline" onclick="restartQuiz()" style="margin-top:16px">↺ Reiniciar quiz</button>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <p>Basado en <strong>Seismic Design of Reinforced Concrete Buildings</strong> — Jack P. Moehle, McGraw-Hill Education © 2015</p>
+  <p style="margin-top:8px;font-size:11px;opacity:.7">Material educativo de síntesis. Siempre consultar el texto original y la normativa vigente (ACI 318, ASCE 7) para aplicaciones de diseño.</p>
+</footer>
+
+<script>
+// ──────────────── ACCORDION ────────────────
+function toggleAcc(btn){
+  const body=btn.nextElementSibling;
+  const open=body.classList.contains('open');
+  document.querySelectorAll('.acc-body.open').forEach(b=>b.classList.remove('open'));
+  document.querySelectorAll('.acc-trigger.open').forEach(b=>b.classList.remove('open'));
+  if(!open){body.classList.add('open');btn.classList.add('open')}
+}
+
+// ──────────────── NAV SCROLL SPY ────────────────
+const sections=document.querySelectorAll('.section');
+const navLinks=document.querySelectorAll('nav a');
+window.addEventListener('scroll',()=>{
+  let cur='';
+  sections.forEach(s=>{if(window.scrollY>=s.offsetTop-80)cur=s.id});
+  navLinks.forEach(a=>{
+    a.classList.toggle('active',a.getAttribute('href')==='#'+cur);
+  });
+},{passive:true});
+
+// ──────────────── VISUALIZER ────────────────
+function updateViz(){
+  const sys=document.getElementById('sys-select').value;
+  const floors=parseInt(document.getElementById('floors-range').value);
+  document.getElementById('floors-val').textContent=floors;
+  const sei=document.getElementById('seismic-select').value;
+  const stage=document.getElementById('viz-stage');
+  const seisMult={'low':0.6,'mid':1,'high':1.6}[sei];
+
+  const floorH=28,baseY=20,totalH=floors*floorH+baseY+40;
+  const buildW={'frame':80,'wall':60,'dual':80}[sys];
+  const driftFactor={'frame':2.2,'wall':1.1,'dual':1.5}[sys];
+  const baseShear={'frame':0.08,'wall':0.12,'dual':0.10}[sys];
+  const period={'frame':floors*0.12,'wall':floors*0.06,'dual':floors*0.09}[sys];
+  const ductility={'frame':'Alta (μ=4–6)','wall':'Media-Alta (μ=3–5)','dual':'Alta (μ=4–6)'}[sys];
+
+  let svgH=totalH+60;
+  const cx=140,wallX=90;
+
+  let defl=[];
+  for(let i=0;i<=floors;i++){
+    const norm=i/floors;
+    let d;
+    if(sys==='frame') d=norm*(0.4+0.6*norm)*driftFactor*seisMult*floors*0.8;
+    else if(sys==='wall') d=Math.pow(norm,1.8)*driftFactor*seisMult*floors*0.8;
+    else d=Math.pow(norm,1.4)*driftFactor*seisMult*floors*0.8;
+    defl.push(d);
+  }
+  const maxDefl=Math.max(...defl);
+
+  let svg=`<svg width="280" height="${svgH}" viewBox="0 0 280 ${svgH}" style="overflow:visible">`;
+  // ground
+  svg+=`<line x1="20" y1="${svgH-40}" x2="260" y2="${svgH-40}" stroke="#888" stroke-width="2"/>`;
+  svg+=`<text x="140" y="${svgH-24}" text-anchor="middle" font-size="11" fill="#888">Base / Fundación</text>`;
+
+  // deformed shape fill
+  let pts='';
+  for(let i=floors;i>=0;i--){
+    const y=svgH-40-i*floorH;
+    const x=cx+defl[i];
+    pts+=`${x},${y} `;
+  }
+  for(let i=0;i<=floors;i++){
+    const y=svgH-40-i*floorH;
+    const x=cx-5;
+    pts+=`${x},${y} `;
+  }
+  svg+=`<polygon points="${pts}" fill="rgba(192,57,43,0.08)" stroke="none"/>`;
+
+  // columns / wall
+  for(let i=0;i<=floors;i++){
+    const y=svgH-40-i*floorH;
+    const dx=defl[i];
+    if(i<floors){
+      const yb=svgH-40-i*floorH,yt=svgH-40-(i+1)*floorH;
+      const dxb=defl[i],dxt=defl[i+1];
+      if(sys==='wall'){
+        svg+=`<rect x="${cx+dxb-5}" y="${yt}" width="10" height="${yb-yt}"
+          fill="${i===0?'#c0392b':'#e74c3c'}" rx="2" stroke="#922b21" stroke-width="0.5" opacity="0.85"/>`;
+      } else {
+        // left column
+        svg+=`<line x1="${cx+dxb-buildW/2}" y1="${yb}" x2="${cx+dxt-buildW/2}" y2="${yt}"
+          stroke="#1a5276" stroke-width="4" stroke-linecap="round"/>`;
+        // right column
+        svg+=`<line x1="${cx+dxb+buildW/2}" y1="${yb}" x2="${cx+dxt+buildW/2}" y2="${yt}"
+          stroke="#1a5276" stroke-width="4" stroke-linecap="round"/>`;
+        if(sys==='dual'){
+          svg+=`<rect x="${cx+dxb-6}" y="${yt+2}" width="12" height="${yb-yt-4}"
+            fill="${i===0?'#c0392b':'#e74c3c'}" rx="2" opacity="0.7"/>`;
+        }
+      }
+    }
+    // floor slabs
+    if(i>0){
+      const slabColor=i===1?'#c0392b':'#2980b9';
+      if(sys!=='wall'){
+        svg+=`<line x1="${cx+dx-buildW/2-4}" y1="${y}" x2="${cx+dx+buildW/2+4}" y2="${y}"
+          stroke="${slabColor}" stroke-width="6" stroke-linecap="round"/>`;
+      } else {
+        svg+=`<line x1="${cx+dx-16}" y1="${y}" x2="${cx+dx+16}" y2="${y}"
+          stroke="${slabColor}" stroke-width="5" stroke-linecap="round"/>`;
+      }
+    }
+    // drift arrow at mid floors
+    if(i>0 && i<floors && i%Math.ceil(floors/3)===0){
+      const drift=((defl[i]-defl[i-1])/floorH*100).toFixed(1);
+      svg+=`<line x1="${cx+dx+buildW/2+8}" y1="${y-floorH/2}" x2="${cx+dx+buildW/2+8+14}" y2="${y-floorH/2}" stroke="var(--amber,#d68910)" stroke-width="1.5" marker-end="url(#da)"/>`;
+    }
+  }
+
+  // deformed centerline
+  let pathD=`M ${cx+defl[0]} ${svgH-40}`;
+  for(let i=1;i<=floors;i++){
+    pathD+=` L ${cx+defl[i]} ${svgH-40-i*floorH}`;
+  }
+  svg+=`<path d="${pathD}" fill="none" stroke="#e74c3c" stroke-width="1.5" stroke-dasharray="5,3" opacity="0.7"/>`;
+
+  // lateral force arrows
+  for(let i=1;i<=floors;i++){
+    const y=svgH-40-i*floorH;
+    const force=5+i*1.2*seisMult;
+    svg+=`<line x1="${cx-buildW/2-30}" y1="${y}" x2="${cx-buildW/2-8}" y2="${y}"
+      stroke="#d68910" stroke-width="${Math.max(1,force/5)}" stroke-linecap="round" marker-end="url(#fa)"/>`;
+  }
+
+  svg+=`<defs>
+    <marker id="fa" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="5" markerHeight="5" orient="auto">
+      <path d="M1 1L7 4L1 7" fill="none" stroke="#d68910" stroke-width="1.5" stroke-linecap="round"/>
+    </marker>
+    <marker id="da" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="5" markerHeight="5" orient="auto">
+      <path d="M1 1L7 4L1 7" fill="none" stroke="#d68910" stroke-width="1.5" stroke-linecap="round"/>
+    </marker>
+  </defs>`;
+
+  svg+=`<text x="${cx}" y="16" text-anchor="middle" font-size="10" font-weight="700" fill="#666"
+    font-family="'Source Sans 3',sans-serif">Deformada (×20)</text>`;
+  svg+='</svg>';
+
+  // info panel
+  const maxDrift=(maxDefl/floors/floorH*100).toFixed(2);
+  const driftOK=parseFloat(maxDrift)<2;
+  const sysNames={'frame':'Marco Especial a Momento','wall':'Muro Estructural Especial','dual':'Sistema Dual'};
+  document.getElementById('viz-info').innerHTML=`
+    <div class="info-stat"><div class="label">Sistema</div><div class="value" style="font-size:14px">${sysNames[sys]}</div></div>
+    <div class="info-stat"><div class="label">Deriva máx.</div><div class="value" style="color:${driftOK?'var(--green)':'var(--red)'}">${maxDrift}%</div><div class="sub">${driftOK?'✓ Admisible':'✗ Excede límite'} ASCE 7</div></div>
+    <div class="info-stat"><div class="label">Período aprox.</div><div class="value">${period.toFixed(2)}s</div><div class="sub">T ≈ ${sys==='frame'?'0.12':'0.06'}N</div></div>
+    <div class="info-stat"><div class="label">Cortante basal / W</div><div class="value">${(baseShear*seisMult).toFixed(3)}</div><div class="sub">Zona sísmica ${sei}</div></div>
+    <div class="info-stat"><div class="label">Ductilidad</div><div class="value" style="font-size:13px">${ductility}</div></div>
+  `;
+  stage.innerHTML=svg;
+}
+updateViz();
+
+// ──────────────── QUIZ ────────────────
+const questions=[
+  {q:"¿Cuál es el principio fundamental detrás del diseño 'Columna Fuerte / Viga Débil'?",opts:["Las columnas deben ser físicamente más altas que las vigas","Las rótulas plásticas deben formarse en vigas, no en columnas, para evitar el colapso total del edificio","Las columnas deben tener mayor sección transversal que las vigas","Las vigas deben diseñarse para carga gravitacional únicamente"],ans:1,fb:"Correcto. Si las columnas plastifican antes que las vigas, se crea un 'mecanismo de piso blando': un nivel completo colapsa mientras el resto del edificio permanece rígido. El Código ACI 318 exige que la suma de momentos nominales de columnas sea ≥ 1.2 × la de las vigas en cada nodo (Moehle, Cap. 12)."},
+  {q:"¿Por qué el diseño por capacidad para corte en vigas no usa directamente las fuerzas del análisis sísmico?",opts:["Porque el análisis sísmico solo aplica para columnas","Porque si la viga alcanza su resistencia probable a flexión, el corte real puede superar significativamente el corte del análisis elástico","Porque el código ACI 318 no requiere revisión de corte en vigas","Porque las fuerzas sísmicas de análisis son siempre conservadoras para corte"],ans:1,fb:"Exacto. Si la viga plastifica en flexión (rótulas en sus extremos), el momento real es el momento probable Mpr (que incluye el refuerzo real y usa fy mayor). El corte resultante: Ve = (Mpr1 + Mpr2)/ln + Vg puede ser muy superior al cortante elástico del análisis. El diseño por capacidad para corte previene una falla frágil diagonal (Moehle, Cap. 12)."},
+  {q:"¿Qué diferencia principal existe entre un muro estructural esbelto y uno achaparrado?",opts:["El muro esbelto usa concreto de mayor resistencia","El muro esbelto tiene comportamiento dominado por flexión; el achaparrado por corte","El muro achaparrado siempre falla de forma dúctil","El muro esbelto no necesita elementos de borde"],ans:1,fb:"Correcto. La relación altura/longitud (H/L) determina el comportamiento dominante. Muros esbeltos (H/L ≥ 2-3) se comportan como vigas en voladizo con rótula plástica en la base. Muros achaparrados (H/L < 2) tienen comportamiento dominado por corte, más difícil de hacer dúctil — a menudo requieren refuerzo diagonal (Moehle, Cap. 13)."},
+  {q:"¿Cuál es el objetivo de diseño del sismo MCE (Maximum Considered Earthquake)?",opts:["El edificio debe quedar sin daños","El edificio debe permanecer completamente funcional","El edificio puede sufrir daños severos, pero no debe colapsar","El edificio debe poder repararse económicamente"],ans:2,fb:"Según Moehle (Cap. 1), el MCE (2% probabilidad en 50 años, ~2475 años de período de retorno) establece como único objetivo que el edificio NO colapse. Se aceptan daños severos o pérdida total del edificio, siempre que los ocupantes puedan evacuar con vida. Esta es la diferencia fundamental con el sismo de diseño (DBE) que exige seguridad de vida con daños controlados."},
+  {q:"¿Por qué los estribos con ganchos a 135° son obligatorios en zonas sísmicas?",opts:["Por requisito estético del detallado","Porque permiten mayor espaciamiento entre estribos","Porque cuando el recubrimiento se desprende por sismo, un gancho a 90° se abre y deja de confinar; el gancho a 135° permanece anclado en el núcleo de concreto","Solo son necesarios en columnas, no en vigas"],ans:2,fb:"Exactamente. Bajo carga cíclica intensa, el recubrimiento se desprende y el núcleo queda expuesto. Un estribo con gancho a 90° puede abrirse y perder su efectividad de confinamiento. El gancho a 135° queda enterrado en el núcleo de concreto incluso sin recubrimiento, manteniendo el confinamiento activo. Esta fue una de las lecciones del sismo de San Fernando 1971 (Moehle, Cap. 4 y 12)."},
+  {q:"En una viga de acoplamiento de muros estructurales, ¿qué función sísmica cumple?",opts:["Transmitir cargas gravitacionales entre los muros","Aumentar la rigidez lateral del sistema de muros","Actuar como 'fusible sísmico' absorbiendo y disipando energía mediante rótulas plásticas, protegiendo los muros principales","Impedir la deformación lateral de los muros"],ans:2,fb:"Las vigas de acoplamiento son los elementos que primero deben plastificar en un sistema de muros acoplados. Al formar rótulas en sus extremos, disipan energía sísmica y modifican la distribución de cortante y momento entre los muros. El grado de acoplamiento entre muros determina qué proporción del momento volcante total resiste el par axial en los muros vs. el momento individual de cada muro (Moehle, Cap. 13)."},
+  {q:"¿Qué es el 'diseño basado en desempeño' (PBSD) y cuándo se aplica principalmente?",opts:["Es sinónimo del diseño prescriptivo siguiendo el código IBC","Es un enfoque que permite desviar de las prescripciones del código demostrando mediante análisis no lineal que el edificio cumple objetivos de desempeño explícitos","Es un método simplificado solo para edificios bajos","Es el diseño elástico usando espectros de respuesta"],ans:1,fb:"El PBSD, descrito en el Cap. 1 de Moehle, permite al ingeniero apartarse de las reglas prescriptivas del código si puede demostrar analíticamente que el edificio cumple (o supera) los objetivos de desempeño del código. Se aplica principalmente en edificios de gran altura en zonas sísmicas de alta demanda (ej. edificios > 50 pisos en California), donde las prescripciones del código no fueron concebidas para esa escala."},
+  {q:"¿Por qué el concreto confinado con estribos puede soportar mayores deformaciones que el concreto sin confinar?",opts:["Porque los estribos aumentan la resistencia a compresión del concreto en más del doble","Porque los estribos impiden el agrietamiento del concreto","Porque los estribos aplican una presión lateral de confinamiento que incrementa tanto la resistencia como —sobre todo— la deformación última del concreto, multiplicando varias veces la capacidad de rotación","Porque el concreto confinado tiene menor módulo de elasticidad"],ans:2,fb:"El confinamiento mediante estribos o espirales aplica presión triaxial al núcleo de concreto. Bajo compresión triaxial, la deformación unitaria última del concreto puede aumentar de ~0.003 (sin confinar) a más de 0.010-0.020 con confinamiento intenso. Esto es fundamental para las zonas de rótula plástica donde el concreto debe seguir contribuyendo bajo grandes deformaciones sísmicas (Moehle, Cap. 4)."}
+];
+
+let qIdx=0,score=0,answered=false;
+
+function renderQ(){
+  const q=questions[qIdx];
+  document.getElementById('q-text').innerHTML=`<h3>Pregunta ${qIdx+1} de ${questions.length}<br><span style="font-weight:400">${q.q}</span></h3>`;
+  document.getElementById('q-options').innerHTML=q.opts.map((o,i)=>`<button class="quiz-opt" onclick="answerQ(${i})">${o}</button>`).join('');
+  document.getElementById('q-feedback').style.display='none';
+  document.getElementById('q-next').style.display='none';
+  document.getElementById('q-progress').textContent=`${score} correcta${score!==1?'s':''} hasta ahora`;
+  answered=false;
+}
+
+function answerQ(i){
+  if(answered)return;
+  answered=true;
+  const q=questions[qIdx];
+  const opts=document.querySelectorAll('.quiz-opt');
+  opts.forEach((o,j)=>{
+    if(j===q.ans)o.classList.add('correct');
+    else if(j===i)o.classList.add('wrong');
+    o.disabled=true;
+  });
+  if(i===q.ans)score++;
+  const fb=document.getElementById('q-feedback');
+  fb.innerHTML=`<strong>${i===q.ans?'✓ Correcto':'✗ Incorrecto'}</strong> — ${q.fb}`;
+  fb.style.display='block';
+  const nextBtn=document.getElementById('q-next');
+  nextBtn.textContent=qIdx<questions.length-1?'Siguiente pregunta →':'Ver resultados';
+  nextBtn.style.display='inline-block';
+  document.getElementById('q-progress').textContent=`${score} correcta${score!==1?'s':''} de ${qIdx+1} respondida${qIdx!==0?'s':''}`;
+}
+
+function nextQ(){
+  qIdx++;
+  if(qIdx>=questions.length){showResult();return;}
+  renderQ();
+}
+
+function showResult(){
+  document.getElementById('quiz-container').style.display='none';
+  const res=document.getElementById('quiz-result');
+  res.style.display='block';
+  const pct=Math.round(score/questions.length*100);
+  const msgs=[[90,'🏆 Excelente dominio','Tienes una comprensión sólida de los fundamentos del libro de Moehle. Estás listo para profundizar en los capítulos técnicos de análisis y detallado.'],[70,'👍 Buen desempeño','Dominas los conceptos principales. Repasa los temas donde te equivocaste — especialmente diseño por capacidad y modos de falla.'],[50,'📚 Revisa los fundamentos','Hay conceptos importantes que reforzar. Te recomendamos releer las secciones de filosofía de diseño (Cap. 1) y modos de falla (Cap. 5–10).'],[0,'🔄 Continúa estudiando','Los fundamentos de diseño sísmico requieren práctica. Empieza por el Capítulo 1 del libro y los conceptos de capacidad de deformación.']];
+  const [,title,body]=msgs.find(([t])=>pct>=t);
+  document.getElementById('res-title').innerHTML=`${title} — <span class="score-badge">${score}/${questions.length} (${pct}%)</span>`;
+  document.getElementById('res-body').textContent=body;
+}
+
+function restartQuiz(){
+  qIdx=0;score=0;answered=false;
+  document.getElementById('quiz-container').style.display='block';
+  document.getElementById('quiz-result').style.display='none';
+  renderQ();
+}
+
+renderQ();
+</script>
+</body>
+</html>
